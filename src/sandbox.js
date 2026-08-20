@@ -1,6 +1,6 @@
 import { updateDisplay } from './utils';
 import { fromEvent } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map, tap, delay, bufferTime } from 'rxjs/operators';
 
 export default () => {
     /** start coding */
@@ -16,7 +16,9 @@ export default () => {
     //observable that returns scroll (from top) on scroll events
     const scroll$ = fromEvent(document, 'scroll').pipe(
         map(() => docElement.scrollTop),
-        tap(evt => console.log("[scroll]: ", evt))
+        tap(evt => console.log("[scroll]: ", evt)),
+        bufferTime(500),
+        tap(evt => console.log("[Buffer]: ", evt))
     );
 
     //observable that returns the amount of page scroll progress

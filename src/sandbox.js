@@ -1,6 +1,6 @@
 import { updateDisplay, displayLog } from './utils';
 import { api } from './api';
-import { merge, fromEvent } from 'rxjs';
+import { concat, forkJoin, fromEvent } from 'rxjs';
 import { map, endWith } from 'rxjs/operators';
 
 export default () => {
@@ -9,6 +9,22 @@ export default () => {
     const button = document.getElementById('btn');
 
     /** get 4 consecutive comments */
+    // const getComments = () =>{
+    //     //get observables from fake REST API.
+    //     const comment1$ = api.getComment(1);
+    //     const comment2$ = api.getComment(2);
+    //     const comment3$ = api.getComment(3);
+    //     const comment4$ = api.getComment(4);
+    //
+    //     //subscribe to all the observables to get and display comments
+    //     concat(comment1$, comment2$, comment3$, comment4$).pipe(
+    //         map(({id, comment}) => `#${id} - ${comment}`),
+    //         endWith('--------//--------')
+    //     ).subscribe(data =>{
+    //         displayLog(data);
+    //     })
+    // }
+
     const getComments = () =>{
         //get observables from fake REST API.
         const comment1$ = api.getComment(1);
@@ -17,8 +33,8 @@ export default () => {
         const comment4$ = api.getComment(4);
 
         //subscribe to all the observables to get and display comments
-        merge(comment1$, comment2$, comment3$, comment4$).pipe(
-            map(({id, comment}) => `#${id} - ${comment}`),
+        forkJoin(comment1$, comment2$, comment3$, comment4$).pipe(
+            map(JSON.stringify),
             endWith('--------//--------')
         ).subscribe(data =>{
             displayLog(data);

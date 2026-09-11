@@ -1,10 +1,18 @@
-import { timer } from 'rxjs';
-import { mapTo } from 'rxjs/operators';
+import { timer, throwError, of } from 'rxjs';
+import { mapTo, mergeMap } from 'rxjs/operators';
 
 export class api{
     static getComment(id){
         return timer(Math.random()*1000).pipe(
-            mapTo({id:id, comment:`comment number ${id}`})
+            mergeMap(evt => {
+                const isErr = Math.random() > 0.6;
+
+                if(isErr){
+                    return throwError(new Error('Failed to fetch comment'));
+                }
+
+                return of({id:id, comment:`comment number ${id}`});
+            }),
         );
     }
 
